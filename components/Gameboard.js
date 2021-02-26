@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { Text, View, Pressable, Alert, Button } from 'react-native'
+import { Text, View, Pressable, Button } from 'react-native'
 import Entypo from '@expo/vector-icons/Entypo'
 import styles from '../style/style'
 
@@ -19,36 +19,20 @@ let initialBoard = [
     START, START, START, START, START,
 ];
 
-
-const gameStatus = {
-
-    //Esittää tämänhetkisen statuksen:
-
-    notStarted: "The game has not started",
-    running: "The game is on...",
-    victory: "You sunk all the ships, victory!",
-    lostTime: "You ran out of time. GAME OVER",
-    lostBombs: "You ran out of bombs, GAME OVER"
-};
-
-
 export default function Gameboard() {
 
-    const [winner, setWinner] = useState("");
     const [board, setBoard] = useState(initialBoard);
-
     const [placeOfShips, setPlaceOfShips] = useState([]);
-
     const [ships, setShips] = useState(NBR_OF_SHIPS);
     const [nbrOfBombs, setNbrOfBombs] = useState(NBR_OF_BOMBS);
     const [hits, setHits] = useState(NBR_OF_HITS);
-
-    const [status, setStatus] = useState('');
-
+    const [status, setStatus] = useState('The game has not started');
 
     function drawItem(number){
         
         //Määrää HIT/MISS ja arvojen muuttumisen
+
+        if (board[number] === START){
 
         let isShip = placeOfShips.includes(number);
         initialBoard[number] = isShip ? HIT : MISS ;
@@ -59,8 +43,10 @@ export default function Gameboard() {
         }
         else (setNbrOfBombs(nbrOfBombs-1)) 
 
-        console.log(isShip);
-        console.log(initialBoard);
+        gameOver();
+        console.log(status);
+        } 
+       
     }
 
     function chooseItemColor(number) {
@@ -79,7 +65,6 @@ export default function Gameboard() {
     }
 
     function resetGame(){
-
         // tyhjentää ruudukon ja palauttaa alkup. arvot
 
         initialBoard = [
@@ -96,62 +81,51 @@ export default function Gameboard() {
 
         console.log('pOS:',placeOfShips)
         placeShips();
-        
-
+    
     }
 
-    function placeShips() {
-        
-        // arvo 0-24 väliltä, kolme kertaa, välttäen samoja lukuja
+    function placeShips() {       
+    // arvo 0-24 väliltä, kolme kertaa, välttäen samoja lukuja
 
-        setPlaceOfShips([]);
+        var placeOfShips = []
 
         while(placeOfShips.length < 3){
             var r = Math.floor(Math.random() * 24) + 1;
             console.log('r:',r)
-            if(placeOfShips.indexOf(r) === -1) setPlaceOfShips(placeOfShips.push(r));
+            if(placeOfShips.indexOf(r) === -1) placeOfShips.push(r);
         }
         setPlaceOfShips(placeOfShips);
         console.log(placeOfShips);
 
+        setStatus('The game is on...');
     }
 
 
     function gameOver(){
+    //aika 0, pommit 0
 
-        //aika 0, pommit 0
-
-        if (NBR_OF_BOMBS === 0){
-            setStatus(gameIsOver);
+        if (nbrOfBombs === 0){
+            setStatus('You ran out of bombs, GAME OVER');
+            return;
         }
         else if (timer() === 0){
-            setStatus(gameIsOver);
+            setStatus('You ran out of time. GAME OVER');
+            return;
         }
-
-    }
-    function winGame() {
-
-        // jos:
-        // voitto: ships = 0
-
-        if (NBR_OF_SHIPS === 0){
-            setStatus(victory);
+        else if (ships === 0){
+            setStatus('You sunk all the ships, victory!');
+            return;
         }
-
     }
 
-  function timer(){
+    function timer(){
 
-    // 30 sekuntia, kun 0 = GameOver
-
-    
+        
 
     }
-
 
 
   // 5x5 ruudukko:
-
     return (
 
     <View style={styles.gameboard}>
@@ -256,14 +230,9 @@ export default function Gameboard() {
 
                 <Button 
                     style={styles.button} 
-                    onPress={() => placeShips()}
+                    onPress={() => resetGame()}
+                    // onPress={(timer())}
                     title= "Start the game!"
-                />
-                
-                <Button 
-                    style={styles.button} 
-                    onPress={() => resetGame()} 
-                    title= "Reset game"
                 />
         </View>
 
