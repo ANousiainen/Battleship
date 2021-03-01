@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import { Text, View, Pressable, Button } from 'react-native'
 import Entypo from '@expo/vector-icons/Entypo'
 import styles from '../style/style'
@@ -21,6 +21,7 @@ let initialBoard = [
 
 export default function Gameboard() {
 
+    const [gameRunning, setGameRunning] =useState(true);
     const [board, setBoard] = useState(initialBoard);
     const [placeOfShips, setPlaceOfShips] = useState([]);
     const [ships, setShips] = useState(NBR_OF_SHIPS);
@@ -28,21 +29,50 @@ export default function Gameboard() {
     const [hits, setHits] = useState(NBR_OF_HITS);
     const [status, setStatus] = useState('The game has not started');
 
+    const [time, setTime] = useState();
+    const timerRef = useRef();
+
+
+    function gameOver(){
+        //Kun jokin ehdoista täyttyy, peli loppuu
+    
+            if (nbrOfBombs < 1.5){
+                setGameRunning(false);
+                stop();
+                setStatus('You ran out of bombs, GAME OVER');
+                return;
+            }
+            else if (time === 0){
+                setGameRunning(false);
+                stop();
+                setStatus('You ran out of time. GAME OVER');
+                return;
+            } 
+            else if (ships < 1 && hits > 2.5){
+                setGameRunning(false);
+                stop();
+                setStatus('You sunk all the ships, VICTORY!');
+                return;
+            }
+
+        }
+
     function drawItem(number){
-        
         //Määrää HIT/MISS ja arvojen muuttumisen
 
         if (board[number] === START){
 
         let isShip = placeOfShips.includes(number);
         initialBoard[number] = isShip ? HIT : MISS ;
+
         if (isShip){
             setHits(hits+1)
             setShips(ships-1)
             setNbrOfBombs(nbrOfBombs-1)
         }
-        else (setNbrOfBombs(nbrOfBombs-1)) 
-
+        else {
+            setNbrOfBombs(nbrOfBombs-1) 
+            }
         gameOver();
         console.log(status);
         } 
@@ -50,7 +80,6 @@ export default function Gameboard() {
     }
 
     function chooseItemColor(number) {
-
         //Määrää elementtien värit
 
         if (board[number] === MISS) {
@@ -78,10 +107,10 @@ export default function Gameboard() {
         setNbrOfBombs (NBR_OF_BOMBS);
         setShips (NBR_OF_SHIPS);
         setHits (NBR_OF_HITS);
+        setTime (30);
 
-        console.log('pOS:',placeOfShips)
-        placeShips();
-    
+        stop();
+        placeShips();    
     }
 
     function placeShips() {       
@@ -91,43 +120,44 @@ export default function Gameboard() {
 
         while(placeOfShips.length < 3){
             var r = Math.floor(Math.random() * 24) + 1;
-            console.log('r:',r)
             if(placeOfShips.indexOf(r) === -1) placeOfShips.push(r);
         }
         setPlaceOfShips(placeOfShips);
         console.log(placeOfShips);
 
+        setGameRunning(true);
+        timer();
         setStatus('The game is on...');
     }
 
+// Ajastin:
 
-    function gameOver(){
-    //aika 0, pommit 0
+    useEffect(() => {
+        return () =>{
+            clearInterval(second);
+        }
+    },[])
 
-        if (nbrOfBombs === 0){
-            setStatus('You ran out of bombs, GAME OVER');
-            return;
-        }
-        else if (timer() === 0){
-            setStatus('You ran out of time. GAME OVER');
-            return;
-        }
-        else if (ships === 0){
-            setStatus('You sunk all the ships, victory!');
-            return;
-        }
+ function timer() {
+    const second = 
+    setInterval(() => {
+        setTime((time) => time-1);
+        }, 1000);
+
+    timerRef.current = second;
     }
 
-    function timer(){
+    function stop() {
+        clearInterval(timerRef.current);
+    }
 
-        
-
+    if (time === 0){
+        stop();
     }
 
 
   // 5x5 ruudukko:
     return (
-
     <View style={styles.gameboard}>
 
         <View style={styles.flex}>
@@ -220,21 +250,19 @@ export default function Gameboard() {
             </Pressable>
         </View>
 
-
         <View>
             <Text style={styles.gameinfo}> Hits: {hits} </Text>
             <Text style={styles.gameinfo}> Bombs left: {nbrOfBombs} </Text>
             <Text style={styles.gameinfo}> Ships left: {ships} </Text>
-            <Text style={styles.gameinfo}> Time left: {timer()} </Text>
+            <Text style={styles.gameinfo}> Time left: {time} </Text>
             <Text style={styles.gameinfo}> Status: {status} </Text>
-
-                <Button 
-                    style={styles.button} 
-                    onPress={() => resetGame()}
-                    // onPress={(timer())}
-                    title= "Start the game!"
-                />
         </View>
+
+        <Button 
+            style={styles.button} 
+            onPress={() => resetGame()}
+            title= "Start the game!"
+        />
 
     </View>
     )

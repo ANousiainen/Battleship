@@ -32,9 +32,11 @@ export default StyleSheet.create({
     margin: 10,
   },
   gameboard: {
+    justifyContent: 'center',
+    flex:1,
     backgroundColor: '#4682B4',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   gameinfo: {
     backgroundColor: '#4682B4',
@@ -49,20 +51,20 @@ export default StyleSheet.create({
     padding: 10
   },
   flex: {
-    flexDirection: "row"
+    flexDirection: 'row',
+    flex:1,
+    justifyContent: 'space-evenly',
   },
   button: {
-    margin: 30,
-    flexDirection: "row",
-    padding: 10,
+    padding: 20,
     backgroundColor: "#4682B4",
-    width: 150,
+    width: 100,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center'
   },
   buttonText: {
     color:"#FFF5EE",
-    fontSize: 20
+    fontSize: 30
   }
 });
