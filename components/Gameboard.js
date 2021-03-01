@@ -32,56 +32,49 @@ export default function Gameboard() {
     const [time, setTime] = useState();
     const timerRef = useRef();
 
-
     function gameOver(){
-        //Kun jokin ehdoista täyttyy, peli loppuu
-    
+        //Kun jokin ehdoista täyttyy, peli loppuu   
+
             if (nbrOfBombs < 1.5){
                 setGameRunning(false);
                 stop();
-                setStatus('You ran out of bombs, GAME OVER');
-                return;
+                setStatus('You ran out of bombs, GAME OVER');               
             }
-            else if (time === 0){
+            else if(time === 0){
                 setGameRunning(false);
                 stop();
-                setStatus('You ran out of time. GAME OVER');
-                return;
+                setStatus('You ran out of time. GAME OVER');            
             } 
-            else if (ships < 1 && hits > 2.5){
+            else if(ships === 0 && hits === 3){
                 setGameRunning(false);
                 stop();
                 setStatus('You sunk all the ships, VICTORY!');
-                return;
             }
-
         }
 
     function drawItem(number){
         //Määrää HIT/MISS ja arvojen muuttumisen
-
+    
         if (board[number] === START){
 
         let isShip = placeOfShips.includes(number);
         initialBoard[number] = isShip ? HIT : MISS ;
-
+        
         if (isShip){
             setHits(hits+1)
             setShips(ships-1)
             setNbrOfBombs(nbrOfBombs-1)
         }
         else {
-            setNbrOfBombs(nbrOfBombs-1) 
+            setNbrOfBombs(nbrOfBombs-1)           
             }
-        gameOver();
-        console.log(status);
         } 
-       
+        gameOver();    
     }
+ 
 
     function chooseItemColor(number) {
         //Määrää elementtien värit
-
         if (board[number] === MISS) {
             return "#FF3031";
         }
@@ -130,33 +123,32 @@ export default function Gameboard() {
         setStatus('The game is on...');
     }
 
-// Ajastin:
+    // Ajastin:
 
-    useEffect(() => {
-        return () =>{
-            clearInterval(second);
+    function timer() {
+        const second = 
+        setInterval(() => {
+            setTime((time) => time-1);
+            }, 1000);
+        timerRef.current = second;
         }
-    },[])
 
- function timer() {
-    const second = 
-    setInterval(() => {
-        setTime((time) => time-1);
-        }, 1000);
+        function stop() {
+            clearInterval(timerRef.current);
+        }
 
-    timerRef.current = second;
-    }
+        if (time === 0){
+            stop();
+        }
 
-    function stop() {
-        clearInterval(timerRef.current);
-    }
-
-    if (time === 0){
-        stop();
-    }
+        useEffect(() => {
+            return () =>{
+                clearInterval(second);
+            }
+        },[])
 
 
-  // 5x5 ruudukko:
+  // 5x5 ruudukko ja info+nappi:
     return (
     <View style={styles.gameboard}>
 
@@ -250,20 +242,20 @@ export default function Gameboard() {
             </Pressable>
         </View>
 
-        <View>
+        <Button 
+            style={styles.button} 
+            title= "Start the game!"
+            onPress={() => resetGame()}
+            
+        />
+
+        <View style={styles.row}>
             <Text style={styles.gameinfo}> Hits: {hits} </Text>
             <Text style={styles.gameinfo}> Bombs left: {nbrOfBombs} </Text>
             <Text style={styles.gameinfo}> Ships left: {ships} </Text>
             <Text style={styles.gameinfo}> Time left: {time} </Text>
             <Text style={styles.gameinfo}> Status: {status} </Text>
         </View>
-
-        <Button 
-            style={styles.button} 
-            onPress={() => resetGame()}
-            title= "Start the game!"
-        />
-
     </View>
     )
 }

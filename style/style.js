@@ -47,8 +47,8 @@ export default StyleSheet.create({
     marginBottom: 5,
   },
   row: {
-    margin: 20,
-    padding: 10
+    margin: 15,
+    padding: 5
   },
   flex: {
     flexDirection: 'row',
@@ -56,6 +56,7 @@ export default StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   button: {
+    margin: 20,
     padding: 20,
     backgroundColor: "#4682B4",
     width: 100,
