@@ -35,7 +35,7 @@ export default function Gameboard() {
     function gameOver(){
     //Kun jokin ehdoista täyttyy, peli loppuu   
 
-            if (nbrOfBombs < 1.5){
+            if (nbrOfBombs < 1){
                 setGameRunning(false);
                 stop();
                 setStatus('You ran out of bombs, GAME OVER');               
@@ -52,10 +52,12 @@ export default function Gameboard() {
             }
         }
 
-//Yritys laittaa useEffect tarkistamaan gameOver() jokaisen drawItemin jälkeen
-    // useEffect(()=> {
-
-    // },[])
+    //Joka kerta kun drawItemia käytetään, gameOver tarkistetaan
+    useEffect(()=> {
+        if (drawItem()){
+            gameOver();
+        }
+    });
 
     function drawItem(number){
     //Määrää HIT/MISS ja arvojen muuttumisen
