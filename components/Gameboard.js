@@ -33,7 +33,7 @@ export default function Gameboard() {
     const timerRef = useRef();
 
     function gameOver(){
-        //Kun jokin ehdoista täyttyy, peli loppuu   
+    //Kun jokin ehdoista täyttyy, peli loppuu   
 
             if (nbrOfBombs < 1.5){
                 setGameRunning(false);
@@ -52,8 +52,13 @@ export default function Gameboard() {
             }
         }
 
+//Yritys laittaa useEffect tarkistamaan gameOver() jokaisen drawItemin jälkeen
+    // useEffect(()=> {
+
+    // },[])
+
     function drawItem(number){
-        //Määrää HIT/MISS ja arvojen muuttumisen
+    //Määrää HIT/MISS ja arvojen muuttumisen
     
         if (board[number] === START){
 
@@ -63,18 +68,18 @@ export default function Gameboard() {
         if (isShip){
             setHits(hits+1)
             setShips(ships-1)
-            setNbrOfBombs(nbrOfBombs-1)
+            setNbrOfBombs(nbrOfBombs-1) 
         }
         else {
             setNbrOfBombs(nbrOfBombs-1)           
             }
-        } 
-        gameOver();    
+        }    
+        gameOver();
     }
  
 
     function chooseItemColor(number) {
-        //Määrää elementtien värit
+    //Määrää elementtien värit
         if (board[number] === MISS) {
             return "#FF3031";
         }
@@ -87,7 +92,7 @@ export default function Gameboard() {
     }
 
     function resetGame(){
-        // tyhjentää ruudukon ja palauttaa alkup. arvot
+    // tyhjentää ruudukon ja palauttaa alkup. arvot
 
         initialBoard = [
             START, START, START, START, START,
@@ -124,31 +129,21 @@ export default function Gameboard() {
     }
 
     // Ajastin:
-
     function timer() {
         const second = 
         setInterval(() => {
-            setTime((time) => time-1);
+            setTime((time) => time-1)
             }, 1000);
         timerRef.current = second;
         }
-
         function stop() {
             clearInterval(timerRef.current);
         }
-
         if (time === 0){
             stop();
         }
 
-        useEffect(() => {
-            return () =>{
-                clearInterval(second);
-            }
-        },[])
-
-
-  // 5x5 ruudukko ja info+nappi:
+  // 5x5 ruudukko ja nappi+info:
     return (
     <View style={styles.gameboard}>
 
@@ -245,8 +240,7 @@ export default function Gameboard() {
         <Button 
             style={styles.button} 
             title= "Start the game!"
-            onPress={() => resetGame()}
-            
+            onPress={() => resetGame()}          
         />
 
         <View style={styles.row}>

@@ -33,7 +33,6 @@ export default StyleSheet.create({
   },
   gameboard: {
     justifyContent: 'center',
-    flex:1,
     backgroundColor: '#4682B4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -52,14 +51,13 @@ export default StyleSheet.create({
   },
   flex: {
     flexDirection: 'row',
-    flex:1,
     justifyContent: 'space-evenly',
   },
   button: {
     margin: 20,
     padding: 20,
     backgroundColor: "#4682B4",
-    width: 100,
+    width: 150,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center'
