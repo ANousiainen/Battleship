@@ -35,20 +35,21 @@ export default function Gameboard() {
     function gameOver(){
     //Kun jokin ehdoista täyttyy, peli loppuu   
 
-            if (nbrOfBombs < 1){
+            
+            if(ships === 0 && hits === 3){
                 setGameRunning(false);
                 stop();
-                setStatus('You ran out of bombs, GAME OVER');               
+                setStatus('You sunk all the ships, VICTORY!');
             }
             else if(time === 0){
                 setGameRunning(false);
                 stop();
                 setStatus('You ran out of time. GAME OVER');            
             } 
-            else if(ships === 0 && hits === 3){
+            else if (nbrOfBombs < 1){
                 setGameRunning(false);
                 stop();
-                setStatus('You sunk all the ships, VICTORY!');
+                setStatus('You ran out of bombs, GAME OVER');  
             }
         }
 
